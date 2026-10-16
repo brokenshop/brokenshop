@@ -1,1 +1,120 @@
 
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#09090b">
+  <meta name="description" content="Broken Shop — فروشگاه آیتم‌های گیمینگ">
+  <title>Broken Shop | Gaming Store</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="header">
+    <a class="logo" href="#">BROKEN<span>SHOP</span></a>
+    <nav>
+      <a href="#home">خانه</a>
+      <a href="#products">محصولات</a>
+      <a href="#about">درباره ما</a>
+    </nav>
+    <div class="header-actions">
+      <button id="themeBtn" class="icon-btn" aria-label="تغییر تم">☼</button>
+      <button id="loginBtn" class="login-btn">ورود / ثبت‌نام</button>
+      <button id="cartBtn" class="cart-btn">سبد <span id="cartCount">0</span></button>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero" id="home">
+      <div class="hero-content">
+        <span class="eyebrow">GAMING • DIGITAL • PREMIUM</span>
+        <h1>تجربه‌ی جدیدی از<br><span>دنیای گیمینگ</span></h1>
+        <p>اسکین، آیتم و محصولات دیجیتال گیمینگ را در یک فروشگاه پیدا کن.</p>
+        <a class="primary-btn" href="#products">مشاهده محصولات ↙</a>
+      </div>
+      <div class="hero-art">
+        <div class="orb"></div>
+        <div class="hero-card">
+          <span>BS / 001</span>
+          <div class="hero-symbol">B<span>.</span></div>
+          <p>BUILT FOR GAMERS</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="stats">
+      <div><strong>24/7</strong><span>دسترسی آنلاین</span></div>
+      <div><strong>Digital</strong><span>محصولات دیجیتال</span></div>
+      <div><strong>Premium</strong><span>تجربه‌ای متفاوت</span></div>
+    </section>
+
+    <section class="products-section" id="products">
+      <div class="section-heading">
+        <div>
+          <span class="eyebrow">THE COLLECTION</span>
+          <h2>محصولات فروشگاه</h2>
+        </div>
+        <input id="searchInput" type="search" placeholder="جست‌وجوی محصول..." aria-label="جست‌وجوی محصول">
+      </div>
+
+      <div class="filters" id="filters">
+        <button class="filter active" data-category="all">همه</button>
+        <button class="filter" data-category="skin">اسکین و آیتم</button>
+        <button class="filter" data-category="config">کانفیگ بازی</button>
+        <button class="filter" data-category="vpn">کانفیگ VPN</button>
+      </div>
+
+      <div id="productsGrid" class="products-grid"></div>
+      <p id="emptyMessage" class="empty hidden">محصولی پیدا نشد.</p>
+    </section>
+
+    <section class="about" id="about">
+      <span class="eyebrow">ABOUT BROKEN SHOP</span>
+      <h2>سادگی در طراحی.<br><span>تمرکز روی تجربه.</span></h2>
+      <p>یک فروشگاه دیجیتال مستقل برای گیمرها؛ ساخته‌شده با طراحی مدرن و رابط کاربری ساده.</p>
+    </section>
+  </main>
+
+  <footer>
+    <a class="logo" href="#">BROKEN<span>SHOP</span></a>
+    <p>© <span id="year"></span> Broken Shop. All rights reserved.</p>
+  </footer>
+
+  <div class="overlay hidden" id="overlay"></div>
+
+  <aside class="drawer" id="cartDrawer" aria-label="سبد خرید">
+    <div class="drawer-heading">
+      <h2>سبد خرید</h2>
+      <button class="close-btn" data-close>✕</button>
+    </div>
+    <div id="cartItems"></div>
+    <div class="cart-bottom">
+      <div class="total"><span>مجموع</span><strong id="cartTotal">۰ تومان</strong></div>
+      <button class="primary-btn full" id="checkoutBtn">ثبت سفارش</button>
+      <p class="small">ثبت سفارش در این نسخه پرداخت آنلاین ندارد.</p>
+    </div>
+  </aside>
+
+  <section class="modal hidden" id="authModal" role="dialog" aria-modal="true">
+    <button class="close-btn modal-close" data-close>✕</button>
+    <span class="eyebrow">YOUR ACCOUNT</span>
+    <h2 id="authTitle">ورود به حساب</h2>
+    <form id="authForm">
+      <label for="email">ایمیل</label>
+      <input id="email" type="email" placeholder="you@example.com" required>
+      <label for="password">رمز عبور</label>
+      <input id="password" type="password" minlength="6" placeholder="حداقل ۶ کاراکتر" required>
+      <button class="primary-btn full" id="authSubmit" type="submit">ورود</button>
+    </form>
+    <button class="text-btn" id="switchAuth">حساب نداری؟ ثبت‌نام کن</button>
+    <p id="authMessage" class="small"></p>
+  </section>
+
+  <div id="toast" class="toast" role="status"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="config.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
+
