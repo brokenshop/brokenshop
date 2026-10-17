@@ -3363,7 +3363,7 @@ const products = [
 {id:"vpn-plus",name:"VPN Config / Plus",category:"vpn",label:"VPN CONFIG",price:160000,icon:"◉",tone:"violet",featured:true,badge:"PLUS",desc:"محصول نمونه؛ تحویل امن باید سمت سرور انجام شود.",status:"فایل واقعی متصل نیست"},
 {id:"vpn-pro",name:"VPN Config / Pro",category:"vpn",label:"VPN CONFIG",price:290000,icon:"✧",tone:"lime",featured:false,badge:"ADVANCED",desc:"محصول نمونه برای نمایش ساختار پلن‌های دیجیتال.",status:"فایل واقعی متصل نیست"}
 ];
-const state = {category:"all",query:"",sort:"featured",cart:read("broken-cart",[]),auth:"login",session:null,menu:false};
+const state = {category:"all",query:"",sort:"featured",cart:read("broken-cart",[]),auth:"login",session:null,menu:false,registered:read("broken-registered",false)};
 const ready = Boolean(config.supabaseUrl && config.supabaseKey && window.supabase);
 const sb = ready ? window.supabase.createClient(config.supabaseUrl,config.supabaseKey) : null;
 function read(key, fallback){try{return JSON.parse(localStorage.getItem(key)) ?? fallback;}catch{return fallback;}}
@@ -3424,12 +3424,13 @@ function renderAuth(){
  $("#authSubtitle").textContent=signup?"برای ساخت حساب، اطلاعاتت را وارد کن.":"برای ادامه وارد حساب خودت شو.";
  $("#authSubmit").innerHTML=(signup?"ساخت حساب":"ورود به حساب")+" <b>↙</b>";
  $("#authSwitch").innerHTML=signup?'حساب داری؟ <b>وارد شو</b>':'حساب نداری؟ <b>ثبت‌نام کن</b>';
+ $("#authSwitch").style.display=(!signup && state.registered)?"none":"block";
  $("#password").autocomplete=signup?"new-password":"current-password";$("#authMessage").textContent="";
 }
 async function refreshSession(){
  if(!sb){$("#accountText").textContent="ورود به حساب";return;}
  const {data}=await sb.auth.getSession();state.session=data.session||null;
- $("#accountText").textContent=state.session?"خروج از حساب":"ورود به حساب";
+ $("#accountText").textContent=state.session?"خروج از حساب":(state.registered?"ثبت‌نام شد":"ورود به حساب");
 }
 async function authSubmit(e){
  e.preventDefault();const message=$("#authMessage"),button=$("#authSubmit");
@@ -3441,6 +3442,8 @@ async function authSubmit(e){
   if(result.error)throw result.error;
   if(state.auth==="signup"){
    const needsEmailConfirmation=!result.data.session;
+   state.registered=true;try{localStorage.setItem("broken-registered","true");}catch(_){}
+   $("#accountText").textContent=state.session?"خروج از حساب":"ثبت‌نام شد";
    message.textContent=needsEmailConfirmation?"ثبت‌نام انجام شد؛ برای فعال شدن حساب، ایمیلت را بررسی کن.":"ثبت‌نام با موفقیت انجام شد!";
    message.className="form-message success";
    state.session=result.data.session||null;
@@ -3521,7 +3524,7 @@ function init(){
  renderProducts();renderCart();events();initObservers();initPointer();
  const loader=$("#loader");const hide=()=>{loader.classList.add("done");document.body.classList.add("ready");setTimeout(()=>loader.remove(),700);};
  if(document.readyState==="complete")setTimeout(hide,250);else addEventListener("load",()=>setTimeout(hide,250),{once:true});setTimeout(hide,2200);
- if(sb){sb.auth.onAuthStateChange((_event,session)=>{state.session=session;$("#accountText").textContent=session?"خروج از حساب":"ورود به حساب";});refreshSession();}
+ if(sb){sb.auth.onAuthStateChange((_event,session)=>{state.session=session;$("#accountText").textContent=session?"خروج از حساب":(state.registered?"ثبت‌نام شد":"ورود به حساب");});refreshSession();}
 }
 init();
 })();
