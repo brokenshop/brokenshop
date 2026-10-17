@@ -3330,7 +3330,7 @@ input, select, textarea { font-size: 16px !important; }
 <footer class="footer"><div class="footer-main"><a class="brand" href="#home"><span class="brand-mark">B<span>.</span></span><span class="brand-text"><b>BROKEN</b><small>DIGITAL GOODS</small></span></a><p>Built for the next generation.<br>Designed to feel different.</p><a class="back-top" href="#home">بازگشت به بالا <b>↑</b></a></div><div class="footer-bottom"><span>© <i id="year"></i> BROKEN SHOP. ALL RIGHTS RESERVED.</span><span>INDEPENDENT DIGITAL STORE / V 2.0</span><span><i></i> SYSTEM READY</span></div></footer>
 </main>
 <div class="overlay hidden" id="overlay"></div>
-<aside class="drawer" id="drawer" aria-hidden="true"><div class="drawer-head"><div><div class="eyebrow"><i></i> YOUR SELECTION</div><h2>سبد خرید <span id="drawerCount">۰</span></h2></div><button class="close" data-close>×</button></div><div class="progress"><i id="progress"></i></div><div class="drawer-items" id="drawerItems"></div><div class="drawer-empty" id="drawerEmpty"><b>⌁</b><h3>سبدت هنوز خالیه.</h3><p>محصولی که دوست داری را اضافه کن.</p><button class="button ghost" data-close>ادامه خرید</button></div><div class="drawer-bottom" id="drawerBottom"><div><span>جمع کل</span><b id="total">۰ تومان</b></div><p>برای ثبت سفارش، ورود به حساب و تأیید ایمیل الزامی است. هزینه نهایی پس از تکمیل تنظیمات فروش محاسبه می‌شود.</p><button class="button primary full" id="checkout">ادامه و ثبت سفارش <b>↙</b></button><small>◇ سفارش ثبت می‌شود؛ پرداخت آنلاین فعال نیست</small></div></aside>
+<aside class="drawer" id="drawer" aria-hidden="true"><div class="drawer-head"><div><div class="eyebrow"><i></i> YOUR SELECTION</div><h2>سبد خرید <span id="drawerCount">۰</span></h2></div><button class="close" data-close>×</button></div><div class="progress"><i id="progress"></i></div><div class="drawer-items" id="drawerItems"></div><div class="drawer-empty" id="drawerEmpty"><b>⌁</b><h3>سبدت هنوز خالیه.</h3><p>محصولی که دوست داری را اضافه کن.</p><button class="button ghost" data-close>ادامه خرید</button></div><div class="drawer-bottom" id="drawerBottom"><div><span>جمع کل</span><b id="total">۰ تومان</b></div><p>هزینه نهایی پس از تکمیل تنظیمات فروش محاسبه می‌شود.</p><button class="button primary full" id="checkout">ادامه و ثبت سفارش <b>↙</b></button><small>◇ سفارش ثبت می‌شود؛ پرداخت آنلاین فعال نیست</small></div></aside>
 <section class="modal hidden" id="authModal" aria-hidden="true" role="dialog" aria-modal="true"><button class="close modal-close" data-close>×</button><div class="modal-mark">B<span>.</span></div><div class="eyebrow"><i></i> MEMBER ACCESS</div><h2 id="authTitle">خوش برگشتی.</h2><p id="authSubtitle">برای ادامه وارد حساب خودت شو.</p><form id="authForm"><label for="email">ایمیل</label><input type="email" id="email" autocomplete="email" placeholder="you@example.com" required><label for="password">رمز عبور</label><input type="password" id="password" minlength="6" placeholder="حداقل ۶ کاراکتر" required><button class="button primary full" id="authSubmit">ورود به حساب <b>↙</b></button></form><button class="auth-switch" id="authSwitch">حساب نداری؟ <b>ثبت‌نام کن</b></button><p id="authMessage" class="form-message"></p><small class="modal-note">با ادامه، قوانین و سیاست‌های فروشگاه را می‌پذیری.</small></section>
 <section class="modal search-modal hidden" id="searchModal" aria-hidden="true" role="dialog" aria-modal="true"><button class="close modal-close" data-close>×</button><div class="eyebrow"><i></i> QUICK SEARCH / ESC TO CLOSE</div><h2>دنبال چی می‌گردی؟</h2><label class="global-search">⌕ <input id="globalSearch" type="search" placeholder="نام محصول را بنویس..."></label><div id="quickResults" class="quick-results"></div><div class="search-hints"><span>پیشنهادها:</span><button data-term="CS2">CS2</button><button data-term="VPN">VPN</button><button data-term="Config">Config</button></div></section>
 <div class="toasts" id="toasts" aria-live="polite"></div>
@@ -3363,7 +3363,7 @@ const products = [
 {id:"vpn-plus",name:"VPN Config / Plus",category:"vpn",label:"VPN CONFIG",price:160000,icon:"◉",tone:"violet",featured:true,badge:"PLUS",desc:"محصول نمونه؛ تحویل امن باید سمت سرور انجام شود.",status:"فایل واقعی متصل نیست"},
 {id:"vpn-pro",name:"VPN Config / Pro",category:"vpn",label:"VPN CONFIG",price:290000,icon:"✧",tone:"lime",featured:false,badge:"ADVANCED",desc:"محصول نمونه برای نمایش ساختار پلن‌های دیجیتال.",status:"فایل واقعی متصل نیست"}
 ];
-const state = {category:"all",query:"",sort:"featured",cart:read("broken-cart",[]),auth:"login",session:null,menu:false,registered:read("broken-registered",false),pendingAddId:null};
+const state = {category:"all",query:"",sort:"featured",cart:read("broken-cart",[]),auth:"login",session:null,menu:false,registered:read("broken-registered",false)};
 const ready = Boolean(config.supabaseUrl && config.supabaseKey && window.supabase);
 const sb = ready ? window.supabase.createClient(config.supabaseUrl,config.supabaseKey) : null;
 function read(key, fallback){try{return JSON.parse(localStorage.getItem(key)) ?? fallback;}catch{return fallback;}}
@@ -3396,7 +3396,7 @@ function renderProducts(){
  $$(".tabs button").forEach(b=>b.classList.toggle("active",b.dataset.category===state.category));
 }
 function totals(){return state.cart.reduce((a,item)=>{const p=product(item.id);if(p){a.count+=item.qty;a.total+=p.price*item.qty;}return a;},{count:0,total:0});}
-function renderCart(){
+function renderCart(){write("broken-cart",state.cart);
  state.cart=state.cart.filter(x=>product(x.id)&&x.qty>0);const t=totals();
  $("#cartCount").textContent=num(t.count);$("#drawerCount").textContent=num(t.count);$("#total").textContent=money(t.total);
  $("#progress").style.width=Math.min(100,t.count*12)+"%";
@@ -3406,10 +3406,11 @@ function renderCart(){
 }
 async function add(id){
  const p=product(id);if(!p)return;
- if(!sb){state.auth="login";renderAuth();openPanel("authModal");toast("برای افزودن محصول، ابتدا وارد حساب شو.","warning");return;}
+ if(!sb){state.auth="login";renderAuth();openPanel("authModal");toast("اتصال حساب فعال نیست؛ تنظیمات Supabase را بررسی کن.","warning");return;}
  await refreshSession();
- if(!state.session){state.pendingAddId=id;state.auth="login";renderAuth();openPanel("authModal");toast("اول وارد حساب شو یا ثبت‌نام کن؛ هنوز چیزی به سبد اضافه نشده.","warning");return;}
- const old=state.cart.find(x=>x.id===id);if(old)old.qty=Math.min(99,old.qty+1);else state.cart.push({id,qty:1});renderCart();toast(`${p.name} به سبد اضافه شد.`);openPanel("drawer");
+ if(!state.session){state.auth="login";renderAuth();openPanel("authModal");toast("برای افزودن به سبد، اول وارد حساب شو یا ثبت‌نام کن.","warning");return;}
+ const old=state.cart.find(x=>x.id===id);if(old)old.qty=Math.min(99,old.qty+1);else state.cart.push({id,qty:1});
+ write("broken-cart",state.cart);renderCart();toast(`${p.name} به سبد اضافه شد.`);openPanel("drawer");
 }
 function openPanel(id){
  closeMenu();$("#overlay").classList.remove("hidden");
@@ -3427,9 +3428,8 @@ function closePanels(){
 function renderAccountUI(){
  const btn=$("#accountButton"), label=$("#accountText");
  const user=state.session&&state.session.user;
- btn.classList.toggle("verified",Boolean(user));
- if(user){label.textContent="حساب من";btn.title="برای خروج کلیک کن";btn.setAttribute("aria-label","حساب کاربری");}
- else {label.textContent="ورود به حساب";btn.title="ورود یا ثبت‌نام";btn.setAttribute("aria-label","ورود یا ثبت‌نام");}
+ if(user){label.textContent="حساب من";btn.title="حساب فعال — برای خروج کلیک کن";btn.setAttribute("aria-label","حساب کاربری");btn.classList.add("verified");}
+ else {label.textContent="ورود به حساب";btn.title="ورود یا ثبت‌نام";btn.setAttribute("aria-label","ورود یا ثبت‌نام");btn.classList.remove("verified");}
 }
 function renderAuth(){
  const signup=state.auth==="signup";
@@ -3447,48 +3447,44 @@ async function refreshSession(){
 }
 async function authSubmit(e){
  e.preventDefault();const message=$("#authMessage"),button=$("#authSubmit");
- if(!sb){message.textContent="حالت نمایشی: URL و کلید عمومی Supabase را در config.js وارد کن.";message.className="form-message error";return;}
+ if(!sb){message.textContent="اتصال Supabase برقرار نیست؛ URL و کلید عمومی را بررسی کن.";message.className="form-message error";return;}
  button.disabled=true;message.textContent="در حال بررسی...";
  try{
   const credentials={email:$("#email").value.trim(),password:$("#password").value};
-  const result=state.auth==="signup"?await sb.auth.signUp({ ...credentials, options:{ emailRedirectTo: window.location.origin + window.location.pathname } }):await sb.auth.signInWithPassword(credentials);
+  const isSignup=state.auth==="signup";
+  const result=isSignup?await sb.auth.signUp({email:credentials.email,password:credentials.password}):await sb.auth.signInWithPassword(credentials);
   if(result.error)throw result.error;
-  if(state.auth==="signup"){
-   if(!result.data.session){
-    message.textContent="Supabase هنوز تأیید ایمیل را اجباری کرده است. در داشبورد Supabase گزینه Confirm email را خاموش کن و دوباره امتحان کن.";
-    message.className="form-message error";
-    return;
-   }
+  state.session=result.data.session||null;
+  if(isSignup){
    state.registered=true;try{localStorage.setItem("broken-registered","true");}catch(_){}
-   state.session=result.data.session;await refreshSession();
-   message.textContent="حساب ساخته شد؛ بدون کد یا لینک ایمیل وارد شدی.";message.className="form-message success";
-   closePanels();window.scrollTo({top:0,behavior:reduced?"auto":"smooth"});
-   setTimeout(()=>toast("ثبت‌نام شد! خوش اومدی به BROKEN SHOP.","success"),reduced?0:350);
-   if(state.pendingAddId){const pending=state.pendingAddId;state.pendingAddId=null;await add(pending);}
-   return;
+   if(!state.session){message.textContent="حساب ساخته شد، اما Supabase هنوز نشست ورود نداده است. در Authentication → Providers → Email گزینه Confirm email را خاموش کن.";message.className="form-message error";await refreshSession();return;}
+   message.textContent="ثبت‌نام موفق بود!";
+  }else{
+   if(!state.session)throw new Error("نشست ورود ساخته نشد؛ تنظیمات تأیید ایمیل Supabase را بررسی کن.");
+   message.textContent="ورود موفق بود.";
   }
-  message.textContent="ورود موفق بود.";message.className="form-message success";state.session=result.data.session;await refreshSession();closePanels();window.scrollTo({top:0,behavior:reduced?"auto":"smooth"});setTimeout(()=>toast("با موفقیت وارد شدی!","success"),reduced?0:350);
-  if(state.pendingAddId){const pending=state.pendingAddId;state.pendingAddId=null;await add(pending);}
+  message.className="form-message success";await refreshSession();closePanels();document.body.classList.remove("locked");
+  window.scrollTo({top:0,behavior:reduced?"auto":"smooth"});
+  setTimeout(()=>toast(isSignup?"ثبت‌نام شد! خوش اومدی به BROKEN SHOP.":"با موفقیت وارد شدی!","success"),reduced?0:350);
  }catch(err){
   const errorText=String(err?.message||"");
-  if(state.auth==="login" && /invalid login credentials/i.test(errorText)){
-    message.textContent="ایمیل یا رمز اشتباه است. اگر مشتری جدیدی هستی، پایین فرم روی «ثبت‌نام کن» بزن و حساب بساز.";
-  }else if(state.auth==="signup" && /already registered|user already registered/i.test(errorText)){
-    message.textContent="این ایمیل قبلاً ثبت‌نام کرده؛ از گزینه «وارد شو» استفاده کن یا رمزت را بازیابی کن.";
-  }else{message.textContent=errorText||"خطا در ورود یا ثبت‌نام.";}
+  if(state.auth==="login"&&/invalid login credentials/i.test(errorText))message.textContent="ایمیل یا رمز اشتباه است. اگر حساب نداری، پایین فرم روی «ثبت‌نام کن» بزن.";
+  else if(state.auth==="signup"&&/already registered|user already registered/i.test(errorText))message.textContent="این ایمیل قبلاً ثبت‌نام کرده؛ از گزینه «وارد شو» استفاده کن.";
+  else if(/email rate limit exceeded/i.test(errorText))message.textContent="محدودیت ارسال ایمیل Supabase فعال شده. کمی صبر کن و دوباره امتحان کن؛ تلاش‌های پیاپی محدودیت را بیشتر می‌کند.";
+  else message.textContent=errorText||"خطا در ورود یا ثبت‌نام.";
   message.className="form-message error";
- }
- finally{button.disabled=false;}
+ }finally{button.disabled=false;}
 }
 async function accountClick(){
- if(sb&&state.session){const {error}=await sb.auth.signOut();if(error){toast("خروج انجام نشد.","error");return;}state.session=null;refreshSession();toast("از حساب خارج شدی.");return;}
+ await refreshSession();
+ if(sb&&state.session){const {error}=await sb.auth.signOut();if(error){toast("خروج انجام نشد: "+(error.message||""),"error");return;}state.session=null;renderAccountUI();toast("از حساب خارج شدی.");return;}
  state.auth="login";renderAuth();openPanel("authModal");
 }
 async function checkout(){
  if(!state.cart.length){toast("سبد خرید خالی است.","warning");return;}
  if(!sb){toast("اتصال Supabase تنظیم نشده است.","warning");return;}
  await refreshSession();
- if(!state.session){closePanels();state.auth="login";renderAuth();openPanel("authModal");toast("برای خرید گان ابتدا ثبت‌نام کن یا وارد حسابت شو.","warning");return;}
+ if(!state.session){closePanels();state.auth="login";renderAuth();openPanel("authModal");toast("برای ثبت سفارش ابتدا وارد حساب شو.","warning");return;}
  const button=$("#checkout"); button.disabled=true;
  try {
    const items=state.cart.map(item=>{const p=product(item.id);return {product_id:item.id, name:p.name, quantity:item.qty, unit_price:p.price, line_total:p.price*item.qty};});
