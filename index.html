@@ -3445,36 +3445,125 @@ async function refreshSession(){
  const {data}=await sb.auth.getSession();state.session=data.session||null;
  renderAccountUI();
 }
-async function authSubmit(e){
- e.preventDefault();const message=$("#authMessage"),button=$("#authSubmit");
- if(!sb){message.textContent="اتصال Supabase برقرار نیست؛ URL و کلید عمومی را بررسی کن.";message.className="form-message error";return;}
- button.disabled=true;message.textContent="در حال بررسی...";
- try{
-  const credentials={email:$("#email").value.trim(),password:$("#password").value};
-  const isSignup=state.auth==="signup";
-  const result=isSignup?await sb.auth.signUp({email:credentials.email,password:credentials.password}):await sb.auth.signInWithPassword(credentials);
-  if(result.error)throw result.error;
-  state.session=result.data.session||null;
-  if(isSignup){
-   state.registered=true;try{localStorage.setItem("broken-registered","true");}catch(_){}
-   if(!state.session){message.textContent="حساب ساخته شد، اما Supabase هنوز نشست ورود نداده است. در Authentication → Providers → Email گزینه Confirm email را خاموش کن.";message.className="form-message error";await refreshSession();return;}
-   message.textContent="ثبت‌نام موفق بود!";
-  }else{
-   if(!state.session)throw new Error("نشست ورود ساخته نشد؛ تنظیمات تأیید ایمیل Supabase را بررسی کن.");
-   message.textContent="ورود موفق بود.";
+
+async function authSubmit(e) {
+  e.preventDefault();
+
+  const message = $("#authMessage");
+  const button = $("#authSubmit");
+
+  if (!sb) {
+    message.textContent = "اتصال Supabase برقرار نیست.";
+    message.className = "form-message error";
+    return;
   }
-  message.className="form-message success";await refreshSession();closePanels();document.body.classList.remove("locked");
-  window.scrollTo({top:0,behavior:reduced?"auto":"smooth"});
-  setTimeout(()=>toast(isSignup?"ثبت‌نام شد! خوش اومدی به BROKEN SHOP.":"با موفقیت وارد شدی!","success"),reduced?0:350);
- }catch(err){
-  const errorText=String(err?.message||"");
-  if(state.auth==="login"&&/invalid login credentials/i.test(errorText))message.textContent="ایمیل یا رمز اشتباه است. اگر حساب نداری، پایین فرم روی «ثبت‌نام کن» بزن.";
-  else if(state.auth==="signup"&&/already registered|user already registered/i.test(errorText))message.textContent="این ایمیل قبلاً ثبت‌نام کرده؛ از گزینه «وارد شو» استفاده کن.";
-  else if(/email rate limit exceeded/i.test(errorText))message.textContent="محدودیت ارسال ایمیل Supabase فعال شده. کمی صبر کن و دوباره امتحان کن؛ تلاش‌های پیاپی محدودیت را بیشتر می‌کند.";
-  else message.textContent=errorText||"خطا در ورود یا ثبت‌نام.";
-  message.className="form-message error";
- }finally{button.disabled=false;}
+
+  button.disabled = true;
+
+  try {
+    const email = $("#email").value.trim();
+    const isSignup = state.auth === "signup";
+
+    message.textContent = "در حال ارسال کد تأیید...";
+    message.className = "form-message";
+
+    // Send a 6-digit OTP to the email.
+    const { error: sendError } = await sb.auth.signInWithOtp({
+      email,
+      options: {
+        shouldCreateUser: isSignup
+      }
+    });
+
+    if (sendError) throw sendError;
+
+    message.textContent = "کد به ایمیلت ارسال شد.";
+    message.className = "form-message success";
+
+    // Ask for the OTP without changing the existing page layout.
+    const token = window.prompt(
+      "کد ۶ رقمی ارسال‌شده به ایمیلت را وارد کن:"
+    );
+
+    if (!token) {
+      message.textContent = "تأیید لغو شد. هر وقت آماده بودی دوباره تلاش کن.";
+      message.className = "form-message error";
+      return;
+    }
+
+    if (!/^\d{6}$/.test(token.trim())) {
+      message.textContent = "کد باید دقیقاً ۶ رقم باشد.";
+      message.className = "form-message error";
+      return;
+    }
+
+    message.textContent = "در حال بررسی کد...";
+
+    const { data, error: verifyError } = await sb.auth.verifyOtp({
+      email,
+      token: token.trim(),
+      type: "email"
+    });
+
+    if (verifyError) throw verifyError;
+    if (!data.session) {
+      throw new Error("نشست ورود ساخته نشد. دوباره تلاش کن.");
+    }
+
+    state.session = data.session;
+
+    if (isSignup) {
+      state.registered = true;
+      try {
+        localStorage.setItem("broken-registered", "true");
+      } catch (_) {}
+    }
+
+    message.textContent = isSignup
+      ? "ثبت‌نام و تأیید ایمیل موفق بود!"
+      : "ورود موفق بود!";
+    message.className = "form-message success";
+
+    await refreshSession();
+    closePanels();
+    document.body.classList.remove("locked");
+
+    window.scrollTo({
+      top: 0,
+      behavior: reduced ? "auto" : "smooth"
+    });
+
+    setTimeout(() => {
+      toast(
+        isSignup
+          ? "ثبت‌نام شد! خوش اومدی به BROKEN SHOP."
+          : "با موفقیت وارد شدی!",
+        "success"
+      );
+    }, reduced ? 0 : 350);
+
+  } catch (err) {
+    const errorText = String(err?.message || "");
+
+    if (/email_provider_disabled|email signups are disabled/i.test(errorText)) {
+      message.textContent =
+        "سرویس Email در Supabase غیرفعال است. ابتدا باید این مشکل در تنظیمات پروژه حل شود.";
+    } else if (/invalid.*otp|otp.*expired|token has expired/i.test(errorText)) {
+      message.textContent = "کد اشتباه است یا منقضی شده؛ دوباره کد بگیر.";
+    } else if (/email rate limit exceeded/i.test(errorText)) {
+      message.textContent =
+        "محدودیت ارسال ایمیل فعال است. کمی صبر کن و دوباره تلاش کن.";
+    } else {
+      message.textContent = errorText || "خطا در ارسال یا تأیید کد.";
+    }
+
+    message.className = "form-message error";
+
+  } finally {
+    button.disabled = false;
+  }
 }
+
 async function accountClick(){
  await refreshSession();
  if(sb&&state.session){const {error}=await sb.auth.signOut();if(error){toast("خروج انجام نشد: "+(error.message||""),"error");return;}state.session=null;renderAccountUI();toast("از حساب خارج شدی.");return;}
