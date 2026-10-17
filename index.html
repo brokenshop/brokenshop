@@ -3363,7 +3363,7 @@ const products = [
 {id:"vpn-plus",name:"VPN Config / Plus",category:"vpn",label:"VPN CONFIG",price:160000,icon:"◉",tone:"violet",featured:true,badge:"PLUS",desc:"محصول نمونه؛ تحویل امن باید سمت سرور انجام شود.",status:"فایل واقعی متصل نیست"},
 {id:"vpn-pro",name:"VPN Config / Pro",category:"vpn",label:"VPN CONFIG",price:290000,icon:"✧",tone:"lime",featured:false,badge:"ADVANCED",desc:"محصول نمونه برای نمایش ساختار پلن‌های دیجیتال.",status:"فایل واقعی متصل نیست"}
 ];
-const state = {category:"all",query:"",sort:"featured",cart:read("broken-cart",[]),auth:"login",session:null,menu:false,registered:read("broken-registered",false)};
+const state = {category:"all",query:"",sort:"featured",cart:read("broken-cart",[]),auth:"login",session:null,menu:false,registered:read("broken-registered",false),pendingAddId:null};
 const ready = Boolean(config.supabaseUrl && config.supabaseKey && window.supabase);
 const sb = ready ? window.supabase.createClient(config.supabaseUrl,config.supabaseKey) : null;
 function read(key, fallback){try{return JSON.parse(localStorage.getItem(key)) ?? fallback;}catch{return fallback;}}
@@ -3404,7 +3404,13 @@ function renderCart(){
  $("#drawerItems").innerHTML=state.cart.map(item=>{const p=product(item.id);return `<article class="drawer-item"><div class="drawer-art art-${esc(p.tone)}">${esc(p.icon)}</div><div class="drawer-copy"><small>${esc(p.label)}</small><h3>${esc(p.name)}</h3><strong>${money(p.price)}</strong><div class="qty"><button data-qty="${p.id}" data-delta="-1">−</button><b>${num(item.qty)}</b><button data-qty="${p.id}" data-delta="1">+</button></div></div><button class="remove" data-remove="${p.id}" aria-label="حذف">×</button></article>`;}).join("");
  write("broken-cart",state.cart);
 }
-function add(id){const p=product(id);if(!p)return;const old=state.cart.find(x=>x.id===id);if(old)old.qty=Math.min(99,old.qty+1);else state.cart.push({id,qty:1});renderCart();toast(`${p.name} به سبد اضافه شد.`);openPanel("drawer");}
+async function add(id){
+ const p=product(id);if(!p)return;
+ if(!sb){state.auth="login";renderAuth();openPanel("authModal");toast("برای افزودن محصول، ابتدا وارد حساب شو.","warning");return;}
+ await refreshSession();
+ if(!state.session){state.pendingAddId=id;state.auth="login";renderAuth();openPanel("authModal");toast("اول وارد حساب شو یا ثبت‌نام کن؛ هنوز چیزی به سبد اضافه نشده.","warning");return;}
+ const old=state.cart.find(x=>x.id===id);if(old)old.qty=Math.min(99,old.qty+1);else state.cart.push({id,qty:1});renderCart();toast(`${p.name} به سبد اضافه شد.`);openPanel("drawer");
+}
 function openPanel(id){
  closeMenu();$("#overlay").classList.remove("hidden");
  [$("#drawer"),$("#authModal"),$("#searchModal")].forEach(p=>{p.classList.add("hidden");p.classList.remove("open");p.setAttribute("aria-hidden","true");});
@@ -3421,10 +3427,8 @@ function closePanels(){
 function renderAccountUI(){
  const btn=$("#accountButton"), label=$("#accountText");
  const user=state.session&&state.session.user;
- const verified=Boolean(user&&(user.email_confirmed_at||user.confirmed_at));
- btn.classList.toggle("verified",verified);
- if(verified){label.textContent="تأیید شد";btn.title="ایمیل شما تأیید شده است";btn.setAttribute("aria-label","حساب تأییدشده");}
- else if(user){label.textContent="ایمیل تأیید نشده";btn.title="برای فعال شدن حساب، ایمیلت را از لینک Supabase تأیید کن";btn.setAttribute("aria-label","ایمیل تأیید نشده");}
+ btn.classList.toggle("verified",Boolean(user));
+ if(user){label.textContent="حساب من";btn.title="برای خروج کلیک کن";btn.setAttribute("aria-label","حساب کاربری");}
  else {label.textContent="ورود به حساب";btn.title="ورود یا ثبت‌نام";btn.setAttribute("aria-label","ورود یا ثبت‌نام");}
 }
 function renderAuth(){
@@ -3450,23 +3454,21 @@ async function authSubmit(e){
   const result=state.auth==="signup"?await sb.auth.signUp({ ...credentials, options:{ emailRedirectTo: window.location.origin + window.location.pathname } }):await sb.auth.signInWithPassword(credentials);
   if(result.error)throw result.error;
   if(state.auth==="signup"){
-   const needsEmailConfirmation=!result.data.session;
-   state.registered=true;try{localStorage.setItem("broken-registered","true");}catch(_){}
-   state.session=result.data.session||null;renderAccountUI();
-   message.textContent=needsEmailConfirmation?"ثبت‌نام انجام شد؛ برای فعال شدن حساب، ایمیلت را بررسی کن.":"ثبت‌نام با موفقیت انجام شد!";
-   message.className="form-message success";
-   state.session=result.data.session||null;
-   await refreshSession();
-   // Keep the modal open when email confirmation is required so the customer sees the message.
-   if(!needsEmailConfirmation){
-     closePanels();
-     window.scrollTo({top:0,behavior:reduced?"auto":"smooth"});
-     document.body.classList.remove("locked");
-     setTimeout(()=>toast("ثبت‌نام شد! خوش اومدی به BROKEN SHOP.","success"),reduced?0:350);
+   if(!result.data.session){
+    message.textContent="Supabase هنوز تأیید ایمیل را اجباری کرده است. در داشبورد Supabase گزینه Confirm email را خاموش کن و دوباره امتحان کن.";
+    message.className="form-message error";
+    return;
    }
+   state.registered=true;try{localStorage.setItem("broken-registered","true");}catch(_){}
+   state.session=result.data.session;await refreshSession();
+   message.textContent="حساب ساخته شد؛ بدون کد یا لینک ایمیل وارد شدی.";message.className="form-message success";
+   closePanels();window.scrollTo({top:0,behavior:reduced?"auto":"smooth"});
+   setTimeout(()=>toast("ثبت‌نام شد! خوش اومدی به BROKEN SHOP.","success"),reduced?0:350);
+   if(state.pendingAddId){const pending=state.pendingAddId;state.pendingAddId=null;await add(pending);}
    return;
   }
   message.textContent="ورود موفق بود.";message.className="form-message success";state.session=result.data.session;await refreshSession();closePanels();window.scrollTo({top:0,behavior:reduced?"auto":"smooth"});setTimeout(()=>toast("با موفقیت وارد شدی!","success"),reduced?0:350);
+  if(state.pendingAddId){const pending=state.pendingAddId;state.pendingAddId=null;await add(pending);}
  }catch(err){
   const errorText=String(err?.message||"");
   if(state.auth==="login" && /invalid login credentials/i.test(errorText)){
@@ -3479,7 +3481,7 @@ async function authSubmit(e){
  finally{button.disabled=false;}
 }
 async function accountClick(){
- if(sb&&state.session){const verified=Boolean(state.session.user&&(state.session.user.email_confirmed_at||state.session.user.confirmed_at));if(!verified){toast("برای تأیید حساب، ایمیلت را بررسی کن.","warning");return;}const {error}=await sb.auth.signOut();if(error){toast("خروج انجام نشد.","error");return;}state.session=null;refreshSession();toast("از حساب خارج شدی.");return;}
+ if(sb&&state.session){const {error}=await sb.auth.signOut();if(error){toast("خروج انجام نشد.","error");return;}state.session=null;refreshSession();toast("از حساب خارج شدی.");return;}
  state.auth="login";renderAuth();openPanel("authModal");
 }
 async function checkout(){
@@ -3487,9 +3489,6 @@ async function checkout(){
  if(!sb){toast("اتصال Supabase تنظیم نشده است.","warning");return;}
  await refreshSession();
  if(!state.session){closePanels();state.auth="login";renderAuth();openPanel("authModal");toast("برای خرید گان ابتدا ثبت‌نام کن یا وارد حسابت شو.","warning");return;}
- const user=state.session.user;
- const verified=Boolean(user&&(user.email_confirmed_at||user.confirmed_at));
- if(!verified){closePanels();state.auth="login";renderAuth();openPanel("authModal");toast("برای خرید، ابتدا ایمیل ثبت‌نامت را تأیید کن.","warning");return;}
  const button=$("#checkout"); button.disabled=true;
  try {
    const items=state.cart.map(item=>{const p=product(item.id);return {product_id:item.id, name:p.name, quantity:item.qty, unit_price:p.price, line_total:p.price*item.qty};});
