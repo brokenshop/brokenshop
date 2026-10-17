@@ -3424,7 +3424,7 @@ function renderAccountUI(){
  const verified=Boolean(user&&(user.email_confirmed_at||user.confirmed_at));
  btn.classList.toggle("verified",verified);
  if(verified){label.textContent="تأیید شد";btn.title="ایمیل شما تأیید شده است";btn.setAttribute("aria-label","حساب تأییدشده");}
- else if(user){label.textContent="تأیید ایمیل";btn.title="برای تأیید حساب، ایمیلت را بررسی کن";btn.setAttribute("aria-label","تأیید ایمیل");}
+ else if(user){label.textContent="ایمیل تأیید نشده";btn.title="برای فعال شدن حساب، ایمیلت را از لینک Supabase تأیید کن";btn.setAttribute("aria-label","ایمیل تأیید نشده");}
  else {label.textContent="ورود به حساب";btn.title="ورود یا ثبت‌نام";btn.setAttribute("aria-label","ورود یا ثبت‌نام");}
 }
 function renderAuth(){
@@ -3433,7 +3433,7 @@ function renderAuth(){
  $("#authSubtitle").textContent=signup?"برای ساخت حساب، اطلاعاتت را وارد کن.":"برای ادامه وارد حساب خودت شو.";
  $("#authSubmit").innerHTML=(signup?"ساخت حساب":"ورود به حساب")+" <b>↙</b>";
  $("#authSwitch").innerHTML=signup?'حساب داری؟ <b>وارد شو</b>':'حساب نداری؟ <b>ثبت‌نام کن</b>';
- $("#authSwitch").style.display=(!signup && state.registered)?"none":"block";
+ $("#authSwitch").style.display="block";
  $("#password").autocomplete=signup?"new-password":"current-password";$("#authMessage").textContent="";
 }
 async function refreshSession(){
@@ -3447,7 +3447,7 @@ async function authSubmit(e){
  button.disabled=true;message.textContent="در حال بررسی...";
  try{
   const credentials={email:$("#email").value.trim(),password:$("#password").value};
-  const result=state.auth==="signup"?await sb.auth.signUp(credentials):await sb.auth.signInWithPassword(credentials);
+  const result=state.auth==="signup"?await sb.auth.signUp({ ...credentials, options:{ emailRedirectTo: window.location.origin + window.location.pathname } }):await sb.auth.signInWithPassword(credentials);
   if(result.error)throw result.error;
   if(state.auth==="signup"){
    const needsEmailConfirmation=!result.data.session;
@@ -3527,6 +3527,19 @@ function events(){
  $("#newsletterForm").addEventListener("submit",e=>{e.preventDefault();$("#newsletterMessage").textContent="ممنون! این فرم نمایشی است و به سرویس خبرنامه وصل نیست.";$("#newsletterEmail").value="";toast("ایمیل در این نسخه به سرور ارسال نمی‌شود.","warning");});
  $("#announcementClose").addEventListener("click",()=>$("#announcement").classList.add("announcement-hidden"));
  document.addEventListener("keydown",e=>{if(e.key==="Escape"){closePanels();closeMenu();}if(e.key==="/"&&!["INPUT","TEXTAREA"].includes(document.activeElement.tagName)){e.preventDefault();openPanel("searchModal");}});
+}
+if (sb) {
+ sb.auth.onAuthStateChange((event, session) => {
+   state.session = session || null;
+   renderAccountUI();
+   if (event === "SIGNED_IN" && session?.user?.email_confirmed_at) {
+     closePanels();
+     window.scrollTo({top:0, behavior: reduced ? "auto" : "smooth"});
+     toast("ایمیل تأیید شد! حساب شما فعال است.", "success");
+   } else if (event === "USER_UPDATED") {
+     refreshSession();
+   }
+ });
 }
 function init(){
  $("#year").textContent=new Date().getFullYear();if(read("broken-theme","dark")==="light")document.body.classList.add("light");
