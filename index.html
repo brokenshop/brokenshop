@@ -3439,8 +3439,19 @@ async function authSubmit(e){
   const credentials={email:$("#email").value.trim(),password:$("#password").value};
   const result=state.auth==="signup"?await sb.auth.signUp(credentials):await sb.auth.signInWithPassword(credentials);
   if(result.error)throw result.error;
-  if(state.auth==="signup"&&!result.data.session){message.textContent="ثبت‌نام انجام شد. اگر تأیید ایمیل فعال است، ایمیلت را بررسی کن.";message.className="form-message success";return;}
-  message.textContent="ورود موفق بود.";message.className="form-message success";state.session=result.data.session;await refreshSession();setTimeout(closePanels,600);
+  if(state.auth==="signup"){
+   const needsEmailConfirmation=!result.data.session;
+   message.textContent=needsEmailConfirmation?"ثبت‌نام انجام شد؛ برای فعال شدن حساب، ایمیلت را بررسی کن.":"ثبت‌نام با موفقیت انجام شد!";
+   message.className="form-message success";
+   state.session=result.data.session||null;
+   await refreshSession();
+   closePanels();
+   window.scrollTo({top:0,behavior:reduced?"auto":"smooth"});
+   document.body.classList.remove("locked");
+   setTimeout(()=>toast(needsEmailConfirmation?"ثبت‌نام شد! ایمیلت را برای تأیید بررسی کن.":"ثبت‌نام شد! خوش اومدی به BROKEN SHOP.","success"),reduced?0:350);
+   return;
+  }
+  message.textContent="ورود موفق بود.";message.className="form-message success";state.session=result.data.session;await refreshSession();closePanels();window.scrollTo({top:0,behavior:reduced?"auto":"smooth"});setTimeout(()=>toast("با موفقیت وارد شدی!","success"),reduced?0:350);
  }catch(err){message.textContent=err.message||"خطا در ورود یا ثبت‌نام.";message.className="form-message error";}
  finally{button.disabled=false;}
 }
