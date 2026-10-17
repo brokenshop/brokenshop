@@ -59,7 +59,7 @@ button:disabled{opacity:.6;cursor:wait}
 .icon-button:hover{color:var(--acid);border-color:#c3ff6559;transform:translateY(-2px)}
 .account-button{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:39px;padding:0 13px;border:1px solid var(--line);border-radius:10px;color:#c8cbc6;background:transparent;font-size:10px;white-space:nowrap;transition:all .25s}
 .account-button:hover{border-color:#c3ff6570;color:var(--acid)}
-.account-button i{width:5px;height:5px;border-radius:50%;background:var(--acid);box-shadow:0 0 10px #c3ff6580}
+.account-button i{width:5px;height:5px;border-radius:50%;background:var(--acid);box-shadow:0 0 10px #c3ff6580}.account-button.verified{border-color:#c3ff6570;color:var(--acid)}.account-button.verified i{width:15px;height:15px;display:inline-flex;align-items:center;justify-content:center;background:var(--acid);color:#10130b;font-style:normal;font-size:10px;box-shadow:0 0 12px #c3ff6570}.account-button.verified i::before{content:"✓"}.account-button.verified span{color:var(--acid)}
 .cart-button{display:inline-flex;align-items:center;gap:8px;min-height:39px;padding:0 12px;border:1px solid var(--acid);border-radius:10px;color:#11140d;background:var(--acid);font-size:10px;font-weight:800;transition:transform .25s var(--ease),box-shadow .25s}
 .cart-button:hover{transform:translateY(-2px);box-shadow:0 8px 24px #c3ff651f}
 .cart-button b{display:grid;place-items:center;min-width:20px;height:20px;padding:0 4px;border-radius:6px;color:var(--acid);background:#11140d;font-size:9px}
@@ -3418,6 +3418,15 @@ function closePanels(){
  $("#overlay").classList.add("hidden");document.body.classList.remove("locked");
  [$("#drawer"),$("#authModal"),$("#searchModal")].forEach(p=>{p.classList.remove("open");p.setAttribute("aria-hidden","true");setTimeout(()=>p.classList.add("hidden"),260);});
 }
+function renderAccountUI(){
+ const btn=$("#accountButton"), label=$("#accountText");
+ const user=state.session&&state.session.user;
+ const verified=Boolean(user&&(user.email_confirmed_at||user.confirmed_at));
+ btn.classList.toggle("verified",verified);
+ if(verified){label.textContent="تأیید شد";btn.title="ایمیل شما تأیید شده است";btn.setAttribute("aria-label","حساب تأییدشده");}
+ else if(user){label.textContent="تأیید ایمیل";btn.title="برای تأیید حساب، ایمیلت را بررسی کن";btn.setAttribute("aria-label","تأیید ایمیل");}
+ else {label.textContent="ورود به حساب";btn.title="ورود یا ثبت‌نام";btn.setAttribute("aria-label","ورود یا ثبت‌نام");}
+}
 function renderAuth(){
  const signup=state.auth==="signup";
  $("#authTitle").textContent=signup?"حساب جدید بساز.":"خوش برگشتی.";
@@ -3428,9 +3437,9 @@ function renderAuth(){
  $("#password").autocomplete=signup?"new-password":"current-password";$("#authMessage").textContent="";
 }
 async function refreshSession(){
- if(!sb){$("#accountText").textContent="ورود به حساب";return;}
+ if(!sb){renderAccountUI();return;}
  const {data}=await sb.auth.getSession();state.session=data.session||null;
- $("#accountText").textContent=state.session?"خروج از حساب":(state.registered?"ثبت‌نام شد":"ورود به حساب");
+ renderAccountUI();
 }
 async function authSubmit(e){
  e.preventDefault();const message=$("#authMessage"),button=$("#authSubmit");
@@ -3443,7 +3452,7 @@ async function authSubmit(e){
   if(state.auth==="signup"){
    const needsEmailConfirmation=!result.data.session;
    state.registered=true;try{localStorage.setItem("broken-registered","true");}catch(_){}
-   $("#accountText").textContent=state.session?"خروج از حساب":"ثبت‌نام شد";
+   state.session=result.data.session||null;renderAccountUI();
    message.textContent=needsEmailConfirmation?"ثبت‌نام انجام شد؛ برای فعال شدن حساب، ایمیلت را بررسی کن.":"ثبت‌نام با موفقیت انجام شد!";
    message.className="form-message success";
    state.session=result.data.session||null;
@@ -3459,7 +3468,7 @@ async function authSubmit(e){
  finally{button.disabled=false;}
 }
 async function accountClick(){
- if(sb&&state.session){const {error}=await sb.auth.signOut();if(error){toast("خروج انجام نشد.","error");return;}state.session=null;refreshSession();toast("از حساب خارج شدی.");return;}
+ if(sb&&state.session){const verified=Boolean(state.session.user&&(state.session.user.email_confirmed_at||state.session.user.confirmed_at));if(!verified){toast("برای تأیید حساب، ایمیلت را بررسی کن.","warning");return;}const {error}=await sb.auth.signOut();if(error){toast("خروج انجام نشد.","error");return;}state.session=null;refreshSession();toast("از حساب خارج شدی.");return;}
  state.auth="login";renderAuth();openPanel("authModal");
 }
 async function checkout(){
@@ -3524,7 +3533,7 @@ function init(){
  renderProducts();renderCart();events();initObservers();initPointer();
  const loader=$("#loader");const hide=()=>{loader.classList.add("done");document.body.classList.add("ready");setTimeout(()=>loader.remove(),700);};
  if(document.readyState==="complete")setTimeout(hide,250);else addEventListener("load",()=>setTimeout(hide,250),{once:true});setTimeout(hide,2200);
- if(sb){sb.auth.onAuthStateChange((_event,session)=>{state.session=session;$("#accountText").textContent=session?"خروج از حساب":(state.registered?"ثبت‌نام شد":"ورود به حساب");});refreshSession();}
+ if(sb){sb.auth.onAuthStateChange((_event,session)=>{state.session=session;renderAccountUI();});refreshSession();}
 }
 init();
 })();
