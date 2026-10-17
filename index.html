@@ -3243,6 +3243,61 @@ html[lang="en"] input,html[lang="en"] textarea,html[lang="en"] select{text-align
 html[lang="en"] .lang-toggle{letter-spacing:.04em}
 
 </style>
+
+<style id="mobile-iphone-polish">
+/* Mobile / iPhone layout refinements */
+:root { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+html { scroll-padding-top: 82px; -webkit-tap-highlight-color: transparent; }
+body { min-width: 0; width: 100%; overflow-x: clip; }
+img, svg, video, canvas { max-width: 100%; }
+button, input, select, textarea { font: inherit; }
+button, a, select, input { touch-action: manipulation; }
+button, .button, .icon-button, .cart-button, .menu-button, .quick-add, .add-button { min-height: 44px; }
+input, select, textarea { font-size: 16px !important; }
+.header { padding-top: max(10px, env(safe-area-inset-top)); }
+.footer { padding-bottom: max(18px, env(safe-area-inset-bottom)); }
+.drawer, .modal { max-height: calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 20px); overflow-y: auto; overscroll-behavior: contain; }
+@media (max-width: 820px) {
+  .nav { top: calc(70px + env(safe-area-inset-top)); max-height: calc(100dvh - 80px - env(safe-area-inset-top)); overflow-y: auto; padding-bottom: max(20px, env(safe-area-inset-bottom)); }
+  .hero { grid-template-columns: minmax(0, 1fr); }
+  .product-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .shell { max-width: 100%; }
+}
+@media (max-width: 600px) {
+  .announcement { line-height: 1.5; text-align: center; }
+  .header { position: relative; flex-wrap: nowrap; min-width: 0; }
+  .brand { min-width: 0; flex: 1 1 auto; }
+  .brand-text { min-width: 0; }
+  .head-actions { flex: 0 0 auto; }
+  .hero h1 { overflow-wrap: anywhere; line-height: 1.02; }
+  .hero-visual { width: 100%; min-width: 0; }
+  .product-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .product-card, .product-info, .product-art { min-width: 0; }
+  .product-info h3, .product-info p { overflow-wrap: anywhere; }
+  .product-bottom { align-items: stretch; }
+  .add-button { width: 100%; min-height: 42px; }
+  .search-box, .search-box input, .sort-box, .sort-box select { min-width: 0; max-width: 100%; }
+  .newsletter input, .newsletter button { width: 100%; min-width: 0; }
+  .drawer { width: min(100vw, 440px); padding-bottom: max(22px, env(safe-area-inset-bottom)); }
+  .modal { width: calc(100vw - 24px); max-width: 440px; margin-inline: auto; }
+}
+@media (max-width: 380px) {
+  .shell { width: calc(100% - 24px); }
+  .header { padding-inline: 12px; }
+  .head-actions { gap: 3px; }
+  .icon-button, .menu-button { width: 32px; min-width: 32px; }
+  .cart-button { padding-inline: 5px; }
+  .product-grid { gap: 8px; }
+  .product-art { height: 125px; }
+  .product-info { padding: 10px 8px; }
+  .product-info>p { font-size: 9px; }
+  .section-head h2, .feature-heading h2, .newsletter h2 { font-size: clamp(28px, 9vw, 35px); }
+}
+@supports (padding: max(0px)) {
+  .toasts { bottom: max(12px, env(safe-area-inset-bottom)); }
+}
+</style>
+
 </head>
 <body>
 <div class="loader" id="loader"><div class="loader-logo">B<span>.</span></div><div class="loader-line"><i></i></div><small>INITIALIZING EXPERIENCE</small></div>
@@ -3265,17 +3320,17 @@ html[lang="en"] .lang-toggle{letter-spacing:.04em}
 <div class="section-head reveal"><div><div class="eyebrow"><i></i> THE COLLECTION <span>02 / SHOP</span></div><h2>انتخاب‌های <em>خاص.</em></h2><p>چیزهایی که تجربه‌ات را یک لِوِل بالاتر می‌برند.</p></div><div class="shop-status"><i></i><b>کالکشن دیجیتال</b><small>به‌روزرسانی‌شده برای ۲۰۲۶</small></div></div>
 <div class="toolbar reveal"><div class="tabs" id="tabs"><button class="active" data-category="all"><i>00</i> همه محصولات <b id="allCount">09</b></button><button data-category="skin"><i>01</i> اسکین و آیتم <b>03</b></button><button data-category="config"><i>02</i> کانفیگ بازی <b>03</b></button><button data-category="vpn"><i>03</i> کانفیگ VPN <b>03</b></button></div><div class="controls"><label class="search-box">⌕ <input id="productSearch" type="search" placeholder="جست‌وجوی محصول..."><kbd>/</kbd></label><label class="sort-box">مرتب‌سازی <select id="sortSelect"><option value="featured">پیشنهادی</option><option value="low">ارزان‌ترین</option><option value="high">گران‌ترین</option><option value="name">نام محصول</option></select></label></div></div>
 <div class="product-grid" id="productGrid"></div><div class="empty hidden" id="empty"><b>⌕</b><h3>چیزی پیدا نشد.</h3><p>عبارت دیگری امتحان کن یا فیلتر را تغییر بده.</p><button class="button ghost" id="reset">پاک کردن فیلترها</button></div>
-<div class="catalog-foot"><span><i></i> قیمت‌ها نمایشی هستند تا زیرساخت فروش تکمیل شود.</span><span id="resultCount">۰ محصول</span></div>
+<div class="catalog-foot"><span><i></i> ثبت سفارش در حساب کاربری انجام می‌شود؛ پرداخت آنلاین هنوز فعال نیست.</span><span id="resultCount">۰ محصول</span></div>
 </section>
 <section class="features shell section" id="features"><div class="feature-top reveal"><div class="eyebrow"><i></i> WHY BROKEN <span>03 / THE EDGE</span></div><div class="side-note">NOT ANOTHER STORE.<br>A DIFFERENT STANDARD.</div></div><div class="feature-heading reveal"><h2>جزئیات، تفاوت را<br><em>می‌سازند.</em></h2><p>تجربه خرید باید به‌اندازه محصولی که انتخاب می‌کنی خوب باشد. برای همین روی هر بخش فکر کرده‌ایم.</p></div>
 <div class="feature-grid"><article class="feature-card reveal"><div class="feature-meta">01 / SPEED <b>↗</b></div><div class="feature-art speed-art"><div class="speed-ring"></div><span>⚡</span></div><h3>سریع و بی‌حاشیه</h3><p>رابطی سبک با مسیر روشن؛ از پیدا کردن محصول تا افزودن به سبد خرید.</p><i class="feature-number">01</i></article><article class="feature-card reveal delay-1"><div class="feature-meta">02 / CURATION <b>↗</b></div><div class="feature-art curate-art"><div></div><i></i><span>SELECTED</span></div><h3>انتخاب‌شده با دقت</h3><p>محصولات دیجیتال با دسته‌بندی واضح و توضیحات قابل فهم.</p><i class="feature-number">02</i></article><article class="feature-card reveal delay-2"><div class="feature-meta">03 / EXPERIENCE <b>↗</b></div><div class="feature-art experience-art"><div class="mini-window"><i></i><i></i><i></i><div><b></b><b></b><b></b><b></b><b></b></div></div></div><h3>ساخته‌شده برای تو</h3><p>طراحی واکنش‌گرا، تم روشن و تاریک و تعامل‌های نرم در تمام صفحه‌ها.</p><i class="feature-number">03</i></article></div></section>
-<section class="statement shell section" id="about"><div class="statement-inner reveal"><div class="statement-orbit"></div><span class="statement-label">THE BROKEN STATEMENT / 2026</span><h2>Don’t follow<br>the <em>ordinary.</em></h2><p>Broken Shop یک ایده ساده دارد: تجربه دیجیتال باید شخصیت داشته باشد. اینجا نقطه شروع آن است.</p><a class="button primary" href="#shop">برگرد به فروشگاه <b>↙</b></a><span class="statement-stamp">BS<span>®</span></span></div></section>
+<section class="statement shell section" id="about"><div class="statement-inner reveal"><div class="statement-orbit"></div><span class="statement-label">ABOUT BROKEN SHOP / 2026</span><h2>بزرگ‌ترین شاپ<br>در حوزهٔ <em>گیمینگ.</em></h2><p>ما بزرگ‌ترین شاپ در حوزهٔ کانفیگ و خدمات تلگرام و CS هستیم. برای اطلاعات بیشتر، از طریق تلگرام به ما پیام دهید.</p><a class="button primary" href="https://t.me/Ako_broken" target="_blank" rel="noopener noreferrer">پیام در تلگرام <b>↗</b></a><span class="statement-stamp">BS<span>®</span></span></div></section>
 <section class="newsletter shell section reveal"><div><div class="eyebrow"><i></i> STAY IN THE LOOP</div><h2>از اتفاق‌های بعدی<br><em>جا نمونی.</em></h2></div><form id="newsletterForm"><label for="newsletterEmail">ایمیلت را وارد کن</label><div><input type="email" id="newsletterEmail" placeholder="you@example.com" required><button aria-label="ثبت ایمیل">↗</button></div><small id="newsletterMessage">بدون اسپم. فقط خبرهای مهم فروشگاه.</small></form></section>
 </main>
 <footer class="footer"><div class="footer-main"><a class="brand" href="#home"><span class="brand-mark">B<span>.</span></span><span class="brand-text"><b>BROKEN</b><small>DIGITAL GOODS</small></span></a><p>Built for the next generation.<br>Designed to feel different.</p><a class="back-top" href="#home">بازگشت به بالا <b>↑</b></a></div><div class="footer-bottom"><span>© <i id="year"></i> BROKEN SHOP. ALL RIGHTS RESERVED.</span><span>INDEPENDENT DIGITAL STORE / V 2.0</span><span><i></i> SYSTEM READY</span></div></footer>
 </main>
 <div class="overlay hidden" id="overlay"></div>
-<aside class="drawer" id="drawer" aria-hidden="true"><div class="drawer-head"><div><div class="eyebrow"><i></i> YOUR SELECTION</div><h2>سبد خرید <span id="drawerCount">۰</span></h2></div><button class="close" data-close>×</button></div><div class="progress"><i id="progress"></i></div><div class="drawer-items" id="drawerItems"></div><div class="drawer-empty" id="drawerEmpty"><b>⌁</b><h3>سبدت هنوز خالیه.</h3><p>محصولی که دوست داری را اضافه کن.</p><button class="button ghost" data-close>ادامه خرید</button></div><div class="drawer-bottom" id="drawerBottom"><div><span>جمع کل</span><b id="total">۰ تومان</b></div><p>هزینه نهایی پس از تکمیل تنظیمات فروش محاسبه می‌شود.</p><button class="button primary full" id="checkout">ادامه و ثبت سفارش <b>↙</b></button><small>◇ خرید امن پس از اتصال زیرساخت فعال می‌شود</small></div></aside>
+<aside class="drawer" id="drawer" aria-hidden="true"><div class="drawer-head"><div><div class="eyebrow"><i></i> YOUR SELECTION</div><h2>سبد خرید <span id="drawerCount">۰</span></h2></div><button class="close" data-close>×</button></div><div class="progress"><i id="progress"></i></div><div class="drawer-items" id="drawerItems"></div><div class="drawer-empty" id="drawerEmpty"><b>⌁</b><h3>سبدت هنوز خالیه.</h3><p>محصولی که دوست داری را اضافه کن.</p><button class="button ghost" data-close>ادامه خرید</button></div><div class="drawer-bottom" id="drawerBottom"><div><span>جمع کل</span><b id="total">۰ تومان</b></div><p>هزینه نهایی پس از تکمیل تنظیمات فروش محاسبه می‌شود.</p><button class="button primary full" id="checkout">ادامه و ثبت سفارش <b>↙</b></button><small>◇ سفارش ثبت می‌شود؛ پرداخت آنلاین فعال نیست</small></div></aside>
 <section class="modal hidden" id="authModal" aria-hidden="true" role="dialog" aria-modal="true"><button class="close modal-close" data-close>×</button><div class="modal-mark">B<span>.</span></div><div class="eyebrow"><i></i> MEMBER ACCESS</div><h2 id="authTitle">خوش برگشتی.</h2><p id="authSubtitle">برای ادامه وارد حساب خودت شو.</p><form id="authForm"><label for="email">ایمیل</label><input type="email" id="email" autocomplete="email" placeholder="you@example.com" required><label for="password">رمز عبور</label><input type="password" id="password" minlength="6" placeholder="حداقل ۶ کاراکتر" required><button class="button primary full" id="authSubmit">ورود به حساب <b>↙</b></button></form><button class="auth-switch" id="authSwitch">حساب نداری؟ <b>ثبت‌نام کن</b></button><p id="authMessage" class="form-message"></p><small class="modal-note">با ادامه، قوانین و سیاست‌های فروشگاه را می‌پذیری.</small></section>
 <section class="modal search-modal hidden" id="searchModal" aria-hidden="true" role="dialog" aria-modal="true"><button class="close modal-close" data-close>×</button><div class="eyebrow"><i></i> QUICK SEARCH / ESC TO CLOSE</div><h2>دنبال چی می‌گردی؟</h2><label class="global-search">⌕ <input id="globalSearch" type="search" placeholder="نام محصول را بنویس..."></label><div id="quickResults" class="quick-results"></div><div class="search-hints"><span>پیشنهادها:</span><button data-term="CS2">CS2</button><button data-term="VPN">VPN</button><button data-term="Config">Config</button></div></section>
 <div class="toasts" id="toasts" aria-live="polite"></div>
@@ -3283,10 +3338,10 @@ html[lang="en"] .lang-toggle{letter-spacing:.04em}
 <script>
 /* Public browser configuration only. Never add service_role or private secrets here. */
 window.BROKEN_CONFIG = Object.freeze({
-  supabaseUrl: "",
-  supabaseKey: "",
+  supabaseUrl: "https://kqtgjrtsozlqzcnmsqeu.supabase.co",
+  supabaseKey: "sb_publishable_PGIKTLvLmp4edzg6TV38Kg_IbtQswbc",
   currency: "تومان",
-  demoMode: true
+  demoMode: false
 });
 
 </script>
@@ -3395,9 +3450,19 @@ async function accountClick(){
 }
 async function checkout(){
  if(!state.cart.length){toast("سبد خرید خالی است.","warning");return;}
- if(!sb){toast("برای سفارش واقعی ابتدا Supabase را تنظیم کن.","warning");return;}
- await refreshSession();if(!state.session){closePanels();state.auth="login";renderAuth();openPanel("authModal");toast("برای ادامه وارد حساب شو.","warning");return;}
- toast("ثبت سفارش امن هنوز به دیتابیس وصل نشده است.","warning");
+ if(!sb){toast("اتصال Supabase تنظیم نشده است.","warning");return;}
+ await refreshSession();
+ if(!state.session){closePanels();state.auth="login";renderAuth();openPanel("authModal");toast("برای ثبت سفارش ابتدا وارد حساب شو.","warning");return;}
+ const button=$("#checkout"); button.disabled=true;
+ try {
+   const items=state.cart.map(item=>{const p=product(item.id);return {product_id:item.id, name:p.name, quantity:item.qty, unit_price:p.price, line_total:p.price*item.qty};});
+   const total=items.reduce((sum,x)=>sum+x.line_total,0);
+   const {data,error}=await sb.from("orders").insert({user_id:state.session.user.id,items,total_amount:total,currency:"IRR",status:"pending"}).select("id").single();
+   if(error) throw error;
+   state.cart=[];write("broken-cart",state.cart);renderCart();closePanels();
+   toast("سفارش ثبت شد؛ شناسه: "+String(data.id).slice(0,8)+". وضعیت سفارش در انتظار بررسی است.");
+ } catch(err) { toast("ثبت سفارش انجام نشد: "+(err.message||"خطای نامشخص"),"error"); }
+ finally {button.disabled=false;}
 }
 function quickSearch(){
  const q=$("#globalSearch").value.trim().toLowerCase();
