@@ -9,6 +9,21 @@
 <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#080807;--panel:#11110f;--gold:#e8b65c;--gold2:#ffdc91;--text:#f8f4ec;--muted:#a7a197;--line:rgba(232,182,92,.22);--glass:rgba(20,19,16,.7)}
+/* Food selection themes */
+body[data-dish="burger"]{--bg:#160d08;--panel:#24140d;--gold:#e8a15c;--gold2:#ffd19a;--line:rgba(232,161,92,.28)}
+body[data-dish="pizza"]{--bg:#170b0b;--panel:#251111;--gold:#ed765f;--gold2:#ffc0a7;--line:rgba(237,118,95,.28)}
+body[data-dish="main"]{--bg:#0b100d;--panel:#121b15;--gold:#b7c88a;--gold2:#e1efb5;--line:rgba(183,200,138,.28)}
+body[data-dish="drink"]{--bg:#071316;--panel:#0d2024;--gold:#66d7d0;--gold2:#b2fff8;--line:rgba(102,215,208,.28)}
+body[data-dish="dessert"]{--bg:#180d17;--panel:#251326;--gold:#e5a0d4;--gold2:#ffd7f4;--line:rgba(229,160,212,.28)}
+body,header,.menu-section,.experience,.reservation,.testimonial,footer,.food-card,.food-card-top,.cart-drawer{transition:background-color .35s,color .35s,border-color .35s}
+.food-photo{width:100%;height:100%;object-fit:cover;position:absolute;inset:0;z-index:1;transition:transform .5s,opacity .25s}
+.food-card-top.image-loading:after{content:"در حال بارگذاری تصویر…";position:absolute;z-index:0;color:var(--muted);font-size:12px}
+.food-card-top.image-loading{background:linear-gradient(135deg,var(--panel),var(--bg))}
+.food-card.selected{outline:2px solid var(--gold);outline-offset:2px}
+.food-card.selected .food-card-top:after{opacity:.3}
+.food-card:hover .food-photo{transform:scale(1.045)}
+.food-card-top .food-badge{z-index:2}
+
 *{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:90px}body{margin:0;background:var(--bg);color:var(--text);font-family:"Vazirmatn",Tahoma,sans-serif;overflow-x:hidden}body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:2;opacity:.09;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.23'/%3E%3C/svg%3E")}a{color:inherit;text-decoration:none}button,input,select,textarea{font:inherit}button{cursor:pointer}::selection{background:var(--gold);color:#15120b}.cursor-glow{position:fixed;width:260px;height:260px;border-radius:50%;background:radial-gradient(circle,rgba(232,182,92,.08),transparent 68%);pointer-events:none;transform:translate(-50%,-50%);z-index:1}.progress{position:fixed;top:0;right:0;height:2px;width:0;background:linear-gradient(90deg,var(--gold),#fff0b5);z-index:99;box-shadow:0 0 12px var(--gold)}
 header{height:82px;position:fixed;top:0;left:0;right:0;z-index:20;display:flex;align-items:center;justify-content:space-between;padding:0 6vw;border-bottom:1px solid transparent;transition:.35s}header.scrolled{background:rgba(8,8,7,.78);backdrop-filter:blur(18px);border-color:var(--line)}.brand{display:flex;align-items:center;gap:12px;font-weight:900;letter-spacing:-1px}.brand-mark{width:42px;height:42px;border:1px solid var(--gold);border-radius:50%;display:grid;place-items:center;color:var(--gold);font-size:23px;box-shadow:0 0 24px #e8b65c22}.brand small{display:block;color:var(--muted);font-size:10px;font-weight:400;letter-spacing:2px;margin-top:-5px}.nav{display:flex;gap:28px;align-items:center;color:#d8d1c5;font-size:13px}.nav a{transition:.25s}.nav a:hover{color:var(--gold)}.header-actions{display:flex;gap:10px;align-items:center}.icon-btn{height:42px;min-width:42px;border:1px solid var(--line);background:#ffffff04;color:white;border-radius:50%;position:relative}.cart-count{position:absolute;top:-5px;left:-4px;background:var(--gold);color:#17120a;font-size:10px;border-radius:20px;min-width:17px;height:17px;display:grid;place-items:center}.btn{border:0;border-radius:4px;padding:13px 23px;background:linear-gradient(115deg,#f8d98d,#c48a32);color:#171108;font-weight:800;box-shadow:0 7px 28px #e8b65c25;transition:transform .25s,box-shadow .25s}.btn:hover{transform:translateY(-3px);box-shadow:0 12px 38px #e8b65c45}.btn-outline{background:transparent;border:1px solid var(--line);color:var(--gold);box-shadow:none}.menu-toggle{display:none}
 .hero{min-height:100vh;position:relative;display:grid;grid-template-columns:1fr 1fr;align-items:center;padding:125px 8vw 80px;overflow:hidden;background:radial-gradient(ellipse at 70% 45%,#563a1826,transparent 48%),linear-gradient(115deg,#080807 20%,#100d08 100%)}.hero:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent 65%,#08080755),linear-gradient(0deg,var(--bg),transparent 20%);pointer-events:none}.hero-grid{position:absolute;inset:0;opacity:.14;background-image:linear-gradient(#b28b4c18 1px,transparent 1px),linear-gradient(90deg,#b28b4c18 1px,transparent 1px);background-size:70px 70px;mask-image:linear-gradient(to bottom,black,transparent 80%);transform:perspective(700px) rotateX(58deg) scale(1.6);transform-origin:bottom}.hero-copy{position:relative;z-index:4;max-width:590px}.eyebrow{display:flex;align-items:center;gap:12px;color:var(--gold);font-size:12px;letter-spacing:2px;margin-bottom:25px}.eyebrow:before{content:"";width:36px;height:1px;background:var(--gold)}h1{font-size:clamp(42px,5.5vw,78px);line-height:1.28;letter-spacing:-2px;margin:0 0 22px;font-weight:900}.gold-text{color:var(--gold);text-shadow:0 0 32px #e8b65c22}.hero-copy p{color:#bcb5a9;line-height:2.2;font-size:15px;max-width:480px;margin-bottom:32px}.hero-buttons{display:flex;gap:14px;flex-wrap:wrap}.hero-meta{display:flex;gap:28px;margin-top:55px;padding-top:25px;border-top:1px solid var(--line);max-width:460px}.meta strong{display:block;color:var(--gold);font-size:22px}.meta span{font-size:11px;color:var(--muted)}
@@ -131,6 +146,37 @@ img{color:transparent}
 @media(max-width:520px){.category-showcase{padding:18px 14px;border-radius:18px}.category-showcase .filters{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.category-showcase .filter{min-height:55px;padding:9px 10px;gap:9px;font-size:12px}.filter-symbol{flex-basis:30px;width:30px;height:30px;border-radius:9px}}
 
 </style>
+<style>
+/* Royal catalog layout inspired by the reference screenshot */
+:root{--bg:#f5f5f5;--panel:#fff;--gold:#e51e2a;--gold2:#ff5960;--text:#242424;--muted:#858585;--line:#e8e8e8;--glass:rgba(255,255,255,.94)}
+body{background:#f5f5f5;color:#242424}body:before{display:none}.cursor-glow{display:none}.progress{background:#e51e2a;box-shadow:none}
+header,header.scrolled{height:84px;background:#fff;border-bottom:1px solid #e6e6e6;backdrop-filter:none;padding:0 5vw;color:#242424;box-shadow:0 2px 7px #00000008}
+.brand{color:#e51e2a}.brand-mark{border:0;border-radius:0;box-shadow:none;color:#e51e2a;font-size:29px}.brand small{color:#777}.nav{color:#444}.nav a:hover{color:#e51e2a}.icon-btn{color:#222;background:#fff;border-color:#e8e8e8}.cart-count{background:#e51e2a;color:white}.btn{background:#e51e2a;color:#fff;box-shadow:none;border-radius:24px}.btn:hover{box-shadow:0 6px 18px #e51e2a2b}.btn-outline{color:#e51e2a;border-color:#e51e2a;background:#fff}
+.hero{padding-top:145px;background:#f5f5f5;color:#222}.hero:after{background:linear-gradient(0deg,#f5f5f5,transparent 20%)}.hero-grid{opacity:.035}.hero-copy p{color:#777}.eyebrow,.gold-text,.meta strong{color:#e51e2a;text-shadow:none}.hero-meta{border-color:#ddd}.meta span{color:#777}.stage-halo,.orbit,.scroll-note{opacity:.25}.stage-label{background:#fff;border-color:#ddd;color:#777}.stage-label strong{color:#e51e2a}
+section{padding:70px 6vw}.menu-section{background:#f5f5f5}.section-head h2{color:#252525}.section-head p{color:#777}.section-tag{color:#e51e2a}.filters{display:flex;flex-wrap:nowrap;overflow-x:auto;gap:9px;padding:3px 2px 12px;margin-bottom:18px;scrollbar-width:thin;scrollbar-color:#ccc transparent}.filter{flex:0 0 auto;min-width:95px;min-height:76px;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:5px;background:#fff;color:#333;border:1px solid #e6e6e6;border-radius:13px;padding:10px 14px;box-shadow:none}.filter.active,.filter:hover{background:#fff0f0;color:#e51e2a;border-color:#e51e2a}.category-showcase .filters{display:flex;flex-wrap:nowrap;overflow-x:auto}.category-showcase .filter{min-height:76px;flex-direction:column;justify-content:center;align-items:center;border-radius:13px;background:#fff;color:#333;border-color:#e6e6e6}.category-showcase .filter.active{background:#fff0f0;color:#e51e2a;border-color:#e51e2a;box-shadow:none}.filter-symbol{filter:none}.food-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:24px}.food-card,.food-card:hover{background:#fff;border:0;border-radius:16px;box-shadow:0 2px 8px #00000008;transform:none}.food-card-top{height:235px;background:#eee; border-radius:0;}.food-card-top:before{display:none}.food-card-top:after{background:linear-gradient(0deg,#00000008,transparent 65%)}.food-photo{filter:none}.food-card:hover .food-photo{transform:scale(1.04)}.food-emoji{filter:none}.food-badge{background:#fff;color:#e51e2a;border:1px solid #eee}.food-card-body{padding:18px 16px 20px}.food-card-body h3{color:#333;font-size:15px}.food-card-body p{color:#888;min-height:38px}.food-card-foot{border-color:#eee}.price{color:#444}.price small{color:#777}.add-btn{border-color:#e51e2a;color:#e51e2a}.add-btn:hover{background:#e51e2a;color:#fff}
+.experience{background:#fff}.experience-copy p{color:#777}.feature{border-color:#e51e2a}.feature span{color:#777}.plate{box-shadow:0 25px 35px #0002}.reservation,.reservation-section{background:#f5f5f5}.reserve-form{background:#fff;border-color:#eee}.reserve-aside{background:#fff}.footer{background:#fff;color:#444}.footer p,.footer a,.footer-bottom{color:#777}
+.cart-drawer{background:#fff;color:#222}.cart-row{border-color:#eee}.cart-drawer .close-btn{color:#222}.empty-cart{color:#888}.toast{background:#222;color:#fff}
+@media(max-width:1000px){.food-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.hero{grid-template-columns:1fr 1fr;padding-left:5vw;padding-right:5vw}}
+@media(max-width:700px){header,header.scrolled{height:70px;padding:0 4vw}.hero{grid-template-columns:1fr;padding-top:100px}.food-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.food-card-top{height:155px}.food-card-body{padding:12px}.food-card-body h3{font-size:13px}.food-card-body p{min-height:0;font-size:11px}.section-head{margin-bottom:22px}section{padding:55px 4vw}.filters{gap:8px}.filter{min-width:88px;min-height:72px}}
+@media(max-width:390px){.food-grid{grid-template-columns:1fr 1fr}.food-card-top{height:135px}.food-card-body{padding:10px}.food-card-body h3{font-size:12px}}
+
+</style>
+
+/* Per-dish atmosphere: selecting a dish changes the page accent and ambient background */
+body{--dish-accent:#e51e2a;--dish-glow:rgba(229,30,42,.08);transition:background-color .35s,color .35s}
+body:after{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;background:radial-gradient(ellipse at 50% 15%,var(--dish-glow),transparent 60%);transition:background .4s}
+body[data-dish="burger"]{--dish-accent:#b66b22;--dish-glow:rgba(190,105,26,.15)}
+body[data-dish="pizza"]{--dish-accent:#d94a2d;--dish-glow:rgba(217,74,45,.13)}
+body[data-dish="main"]{--dish-accent:#7b4b2a;--dish-glow:rgba(123,75,42,.14)}
+body[data-dish="drink"]{--dish-accent:#18a99b;--dish-glow:rgba(24,169,155,.14)}
+body[data-dish="dessert"]{--dish-accent:#9b4f83;--dish-glow:rgba(155,79,131,.14)}
+body[data-dish] .section-tag,body[data-dish] .eyebrow,body[data-dish] .gold-text,body[data-dish] .meta strong,body[data-dish] .price{color:var(--dish-accent)}
+body[data-dish] .filter.active,body[data-dish] .filter:hover{border-color:var(--dish-accent);color:var(--dish-accent);background:color-mix(in srgb,var(--dish-accent) 8%,white)}
+body[data-dish] .add-btn{border-color:var(--dish-accent);color:var(--dish-accent)}
+.food-card{cursor:pointer}.food-card.selected{outline:2px solid var(--dish-accent);outline-offset:2px;box-shadow:0 8px 28px var(--dish-glow)}
+.food-photo{opacity:0;transition:opacity .35s,transform .65s}.food-photo.loaded{opacity:1}.food-card-top.image-loading{background:linear-gradient(110deg,#eee 8%,#f8f8f8 18%,#eee 33%);background-size:200% 100%;animation:imgShimmer 1.25s linear infinite}
+@keyframes imgShimmer{to{background-position-x:-200%}}
+
 </head>
 <body>
 <div class="progress" id="progress"></div><div class="cursor-glow" id="cursorGlow"></div>
@@ -191,14 +237,17 @@ img{color:transparent}
 <div class="overlay" id="overlay"></div><aside class="cart-drawer" id="cartDrawer" aria-label="سبد خرید"><div class="drawer-head"><h3>سبد سفارش شما</h3><button class="close-btn" id="cartClose">×</button></div><div class="cart-items" id="cartItems"></div><div class="cart-total"><span>مجموع سفارش</span><strong id="cartTotal">۰ تومان</strong></div><button class="btn" id="checkoutBtn" style="width:100%">ادامه سفارش</button><p style="font-size:10px;color:var(--muted);line-height:2">پرداخت آنلاین در این نسخه فعال نیست. برای سفارش واقعی باید درگاه پرداخت و بک‌اند متصل شود.</p></aside><div class="toast" id="toast"></div>
 <script>
 
-// Image resilience: retry alternate host once, then hide broken icon while preserving the designed background.
-document.addEventListener('error', function(e){
- const img=e.target;
- if(!(img instanceof HTMLImageElement)) return;
- const backup=img.dataset.fallback;
- if(backup && !img.dataset.triedBackup){img.dataset.triedBackup='1';img.src=backup;return;}
- img.classList.add('image-failed');
-}, true);
+// Image fallback: try a second host only once per image, then show a clear placeholder.
+const imageAlternates={
+ burger:['https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=900&q=85'],
+ pizza:['https://images.unsplash.com/photo-1579751626657-72bc17010498?auto=format&fit=crop&w=900&q=85'],
+ main:['https://images.unsplash.com/photo-1546833999-b9f581a1996d?auto=format&fit=crop&w=900&q=85'],
+ pasta:['https://images.unsplash.com/photo-1473093295043-cdd812d0e601?auto=format&fit=crop&w=900&q=85'],
+ drink:['https://images.unsplash.com/photo-1513558161293-cdaf765edfd7?auto=format&fit=crop&w=900&q=85'],
+ dessert:['https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=900&q=85']
+};
+document.addEventListener('load',e=>{const img=e.target;if(img instanceof HTMLImageElement){img.classList.add('loaded');img.closest('.food-card-top')?.classList.remove('image-loading')}},true);
+document.addEventListener('error',e=>{const img=e.target;if(!(img instanceof HTMLImageElement))return;const kind=img.dataset.kind||[...img.classList].find(c=>imageAlternates[c])||'burger';const list=imageAlternates[kind]||[];const next=Number(img.dataset.retry||0);if(next<list.length){img.dataset.retry=String(next+1);img.src=list[next];return;}img.classList.add('image-failed');img.style.opacity='0';img.closest('.food-card-top')?.classList.remove('image-loading');},true);
 
 const foods=[
 {id:1,name:"برگر رویال",cat:"burger",emoji:"",photo:"https://images.pexels.com/photos/1639557/pexels-photo-1639557.jpeg?auto=compress&cs=tinysrgb&w=850",price:385000,tag:"پرفروش",desc:"گوشت گریل‌شده، پنیر چدار، سس اختصاصی و نان بریوش."},
@@ -213,24 +262,11 @@ const foods=[
 ];
 const money=n=>new Intl.NumberFormat('fa-IR').format(n)+" تومان";
 const grid=document.getElementById('foodGrid');let cart={};
-function renderFoods(filter='all'){grid.innerHTML=foods.filter(f=>filter==='all'||f.cat===filter).map((f,i)=>`<article class="food-card reveal visible" style="transition-delay:${(i%3)*70}ms"><div class="food-card-top"><span class="food-badge">${f.tag}</span><img class="food-photo" src="${f.photo}" alt="${f.name}" loading="lazy"></div><div class="food-card-body"><h3>${f.name}</h3><p>${f.desc}</p><div class="food-card-foot"><div class="price">${new Intl.NumberFormat('fa-IR').format(f.price)} <small>تومان</small></div><button class="add-btn" data-add="${f.id}" aria-label="افزودن ${f.name}">+</button></div></div></article>`).join('')}
+function renderFoods(filter='all'){grid.innerHTML=foods.filter(f=>filter==='all'||f.cat===filter).map((f,i)=>{const kind=f.cat==='burger'?'burger':f.cat==='pizza'?'pizza':f.cat==='drink'?'drink':f.cat==='dessert'?'dessert':f.id===4?'pasta':'main';return `<article class="food-card reveal visible" data-dish-card="${f.id}" data-cat="${f.cat}" style="transition-delay:${(i%4)*55}ms"><div class="food-card-top image-loading"><span class="food-badge">${f.tag}</span><img class="food-photo" data-kind="${kind}" src="${f.photo}" alt="${f.name}" loading="eager" decoding="async"></div><div class="food-card-body"><h3>${f.name}</h3><p>${f.desc}</p><div class="food-card-foot"><div class="price">${new Intl.NumberFormat('fa-IR').format(f.price)} <small>تومان</small></div><button class="add-btn" data-add="${f.id}" aria-label="افزودن ${f.name}">+</button></div></div></article>`}).join('')}
 renderFoods();
-document.addEventListener('error', e => {
- const img=e.target;
- if(!img || img.tagName!=='IMG' || img.dataset.fallbackTried) return;
- img.dataset.fallbackTried='1';
- const fallbacks={
-  'hero-food-photo':'https://images.pexels.com/photos/1639557/pexels-photo-1639557.jpeg?auto=compress&cs=tinysrgb&w=1100',
-  'tomato-photo':'https://images.pexels.com/photos/1327838/pexels-photo-1327838.jpeg?auto=compress&cs=tinysrgb&w=260',
-  'greens-photo':'https://images.pexels.com/photos/1656666/pexels-photo-1656666.jpeg?auto=compress&cs=tinysrgb&w=260',
-  'plate-food':'https://images.pexels.com/photos/769289/pexels-photo-769289.jpeg?auto=compress&cs=tinysrgb&w=700',
-  'food-photo':'https://images.pexels.com/photos/1639557/pexels-photo-1639557.jpeg?auto=compress&cs=tinysrgb&w=850'
- };
- const key=[...img.classList].find(c=>fallbacks[c]);
- if(key) img.src=fallbacks[key];
-},true);
 document.getElementById('filters').addEventListener('click',e=>{const b=e.target.closest('[data-filter]');if(!b)return;document.querySelectorAll('.filter').forEach(x=>x.classList.toggle('active',x===b));renderFoods(b.dataset.filter)});
 function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(window.toastTimer);window.toastTimer=setTimeout(()=>t.classList.remove('show'),2600)}
+grid.addEventListener('click',e=>{if(e.target.closest('[data-add]'))return;const card=e.target.closest('[data-dish-card]');if(!card)return;const food=foods.find(f=>f.id===Number(card.dataset.dishCard));if(!food)return;document.body.dataset.dish=food.cat;document.querySelectorAll('.food-card.selected').forEach(c=>c.classList.remove('selected'));card.classList.add('selected');const title=document.querySelector('.section-head h2');if(title)title.dataset.selectedFood=food.name;});
 document.addEventListener('click',e=>{const b=e.target.closest('[data-add]');if(!b)return;const id=Number(b.dataset.add);cart[id]=(cart[id]||0)+1;renderCart();openCart();toast('به سبد سفارش اضافه شد')});
 function renderCart(){const count=Object.values(cart).reduce((a,b)=>a+b,0);document.getElementById('cartCount').textContent=new Intl.NumberFormat('fa-IR').format(count);const items=Object.entries(cart).filter(([id,q])=>q>0);document.getElementById('cartItems').innerHTML=items.length?items.map(([id,q])=>{const f=foods.find(x=>x.id===+id);return `<div class="cart-row"><img src="${f.photo}" alt="" style="width:48px;height:48px;object-fit:cover;border-radius:6px"><div class="info"><strong>${f.name}</strong><small>${money(f.price)}</small></div><div class="qty"><button data-qty="${id}" data-delta="-1">−</button><span>${new Intl.NumberFormat('fa-IR').format(q)}</span><button data-qty="${id}" data-delta="1">+</button></div></div>`}).join(''):'<div class="empty-cart">سبد سفارش شما هنوز خالی است.<br>از منو یک طعم خوشمزه انتخاب کن.</div>';const total=items.reduce((s,[id,q])=>s+foods.find(f=>f.id===+id).price*q,0);document.getElementById('cartTotal').textContent=money(total)}
 document.getElementById('cartItems').addEventListener('click',e=>{const b=e.target.closest('[data-qty]');if(!b)return;const id=+b.dataset.qty;cart[id]=(cart[id]||0)+Number(b.dataset.delta);if(cart[id]<=0)delete cart[id];renderCart()});
